@@ -1,0 +1,16 @@
+{
+  "offenseReply": "[at]？",
+  "offense": "废|爬|爪巴|垃圾|傻|逼|弱|没|蠢",
+  "requireImageReply": "[at]在找了，在找了",
+  "sendImageFailed": "机器人想发色图，但是失败了，它心累了不想再尝试了。\n",
+  "recommendReply": "[at]在推了，在推了",
+  "moreImageReply": "[at]在色了，在色了",
+  "noMoreImageError": "原因：结果全发完了。可使用“重置记录[关键词]”重置搜索历史。",
+  "apiError": "错误：接口错误。解决办法：让管理员检查一下。",
+  "timeOutError": "错误：超时。解决办法：稍后再试一次。",
+  "noSearchResult": "原因：没有搜索到。解决办法：使用日文关键词或换一个关键词。",
+  "unknownError": "错误：未知错误。解决办法：我也不知道。",
+  "noArtistIllust": "用户id不存在或该用户没有作品。",
+  "noSuchIllust": "没有相关作品或作品已删除。",
+  "noSingleImage": "未搜索到单张作品，当前设置只发送单张作品。"
+}

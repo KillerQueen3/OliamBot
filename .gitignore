@@ -1,0 +1,8 @@
+/deviceInfo.json
+/.idea
+/out
+/src/test
+/.gitignore
+*.iml
+/resource/search/*
+/log
