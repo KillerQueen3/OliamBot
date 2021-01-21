@@ -119,6 +119,8 @@ public class Utils {
             return res;
         } catch (IOException e) {
             MyLog.error(e);
+            File f = new File("./resource/search");
+            f.mkdirs();
             return new HashMap<>();
         }
     }
@@ -126,8 +128,8 @@ public class Utils {
     @NotNull
     private static String getFileName(long groupID, @NotNull String tag) {
         String hash = Integer.toHexString(tag.hashCode());
-        if (hash.length() >= 3)
-            hash = hash.substring(0, 2);
+        if (hash.length() >= 2)
+            hash = hash.substring(0, 1);
         return "./resource/search/" + groupID + "-" + hash + ".json";
     }
 
@@ -179,8 +181,7 @@ public class Utils {
                 file.createNewFile();
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-            List<History> historyList = gson.fromJson(br, new TypeToken<List<History>>() {
-            }.getType());
+            List<History> historyList = gson.fromJson(br, new TypeToken<List<History>>() {}.getType());
             if (historyList == null)
                 historyList = new LinkedList<>();
             br.close();
@@ -192,23 +193,12 @@ public class Utils {
     }
 
     public static void writeFailed(String fail) {
-        GsonBuilder builder = new GsonBuilder();
-        builder.setPrettyPrinting();
-        Gson gson = builder.create();
         try {
-            File file = new File("./resource/fail.json");
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-            List<String> failedList = gson.fromJson(br, new TypeToken<List<String>>() {
-            }.getType());
-            if (failedList == null)
-                failedList = new LinkedList<>();
-            br.close();
-            failedList.add(fail);
-            writeToFile(gson.toJson(fail), file);
-        } catch (Exception e) {
+            FileOutputStream outputStream = new FileOutputStream("./resource/fail.txt", true);
+            OutputStreamWriter writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
+            writer.write(fail + System.lineSeparator());
+            writer.close();
+        } catch (IOException e) {
             MyLog.error(e);
         }
     }

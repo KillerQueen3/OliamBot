@@ -19,6 +19,6 @@ public class MyLog {
     }
 
     public static void error(Throwable e) {
-        logger.error("ERROR", e);
+        logger.error(e.toString(), e);
     }
 }
