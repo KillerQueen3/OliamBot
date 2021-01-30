@@ -12,7 +12,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class ImageSearch {
-    static final String ASCII2D = "https://ascii2d.net/search/url/";
+    private static final String ASCII2D = "https://ascii2d.net/search/url/";
 
     public static String getImageURL(Image image) {
         return "http://gchat.qpic.cn/gchatpic_new/0/0-0-" +
@@ -20,13 +20,13 @@ public class ImageSearch {
                 "/0?term=2";
     }
 
-    public static String getInfo(String requestURL) {
+    private static String getInfo(String requestURL) {
         MyLog.info("Getting {}", requestURL);
         try {
             String response = HttpRequest.get(requestURL).addHeader("User-Agent",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36")
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36")
                     .retry(25, 400).execute().asString();
-            if (response==null || response.length() == 0) {
+            if (response == null || response.length() == 0) {
                 MyLog.failed("FAILED! RESPONSE: {}", response);
                 return null;
             }
@@ -55,7 +55,7 @@ public class ImageSearch {
         try {
             String src = imgBox.getElementsByTag("img").first().attr("src");
             String source = item1.getElementsByTag("a").first().attr("href");
-            return new String[] {"https://ascii2d.net" + src, source, bovw};
+            return new String[]{"https://ascii2d.net" + src, source, bovw};
         } catch (NullPointerException e) {
             MyLog.error(e);
             return null;
@@ -78,7 +78,7 @@ public class ImageSearch {
         try {
             String src = imgBox.getElementsByTag("img").first().attr("src");
             String source = item1.getElementsByTag("a").first().attr("href");
-            return new String[] {"https://ascii2d.net" + src, source};
+            return new String[]{"https://ascii2d.net" + src, source};
         } catch (NullPointerException e) {
             MyLog.error(e);
             return null;
@@ -91,6 +91,6 @@ public class ImageSearch {
         if (c == null)
             return null;
         String[] b = searchABovw(c[2]);
-        return new String[][] {c, b};
+        return new String[][]{c, b};
     }
 }

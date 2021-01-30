@@ -3,9 +3,6 @@ package com.oliambot.utils;
 import com.oliambot.exception.LoadException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Settings {
     public static long botID;
     public static String botPW;

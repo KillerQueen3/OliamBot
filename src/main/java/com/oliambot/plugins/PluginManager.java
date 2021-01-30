@@ -29,7 +29,7 @@ public class PluginManager {
         return new SimpleListenerHost() {
             @EventHandler
             public ListeningStatus onGroup(GroupMessageEvent event) throws Exception {
-                for (PluginLoader loader: PLUGINS.values()) {
+                for (PluginLoader loader : PLUGINS.values()) {
                     loader.catchGroupMessage(event.getSender(), event.getMessage());
                 }
                 return ListeningStatus.LISTENING;
@@ -49,8 +49,8 @@ public class PluginManager {
             return "未找到插件。";
         }
         StringBuilder builder = new StringBuilder("现有插件");
-        for (String name: PLUGINS.keySet()) {
-            builder.append("\n").append(name).append("  -  ").append(PLUGINS.get(name).isEnabled(gid)? "启用": "禁用");
+        for (String name : PLUGINS.keySet()) {
+            builder.append("\n").append(name).append("  -  ").append(PLUGINS.get(name).isEnabled(gid) ? "启用" : "禁用");
         }
         return builder.toString();
     }
@@ -65,7 +65,7 @@ public class PluginManager {
     }
 
     public static void dropAll() throws Exception {
-        for (PluginLoader loader: PLUGINS.values()) {
+        for (PluginLoader loader : PLUGINS.values()) {
             loader.drop();
         }
         PLUGINS.clear();
@@ -89,7 +89,7 @@ public class PluginManager {
 
     public static void loadPlugins() throws Exception {
         List<URL> urls = getPlugins();
-        for (URL url: urls) {
+        for (URL url : urls) {
             loadPlugin(url);
         }
         MyLog.info("插件加载完成，共{}个插件。", PLUGINS.size());
@@ -100,7 +100,7 @@ public class PluginManager {
         File f = new File("./plugins");
         File[] files = f.listFiles(file -> file.getName().endsWith(".jar"));
         List<URL> res = new ArrayList<>();
-        for (File file: files) {
+        for (File file : files) {
             res.add(new URL("file:" + file.getPath()));
         }
         return res;

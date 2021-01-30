@@ -2,9 +2,9 @@
 ## _pixivapi目录_
 * 基于 [pixivpy](https://github.com/upbit/pixivpy) 和 [flask](https://github.com/pallets/flask) 的pixiv搜索api，本bot**必须**使用此api搜索数据
 * 启动方式
-  * 安装依赖
+  * 安装依赖 `pip install -r requirements.txt`
   * 在myAPI.py中配置好端口号（和settings.properties中的一致）
-  * python myAPI.py
+  * `python myAPI.py`
 ## search目录
 * 存放搜索缓存，以json格式存放。
 * 文件“群号-x.json”存放对应群的搜索记录，x由标签哈希值决定。

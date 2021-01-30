@@ -3,11 +3,7 @@
 ## 插件特性
 * 支持热加载，但仅支持处理相应消息事件。
 * _不完善的功能_，存在未知问题。
-## 相关指令（详见 [PluginCMD](https://github.com/KillerQueen3/OliamBot/blob/master/src/main/java/com/oliambot/messages/PluginCMD.java) ）
-* 卸载{插件名} -- 将对应插件卸载。影响整个bot，需群主权限。
-* 加载插件 -- 读取本目录所有文件，加载未加载的可用插件。影响整个bot，需群主权限。
-* 插件列表 -- 发送有关已加载插件的消息。
-* 禁用/启用{插件名} -- 改变插件消息事件的可用状态。影响对应群聊，需管理员权限。
+
 ## 插件要求
 * `.jar`格式
 * 存在一个类实现`com.oliambot.inf.Plugin`接口并实现其中的两个方法。

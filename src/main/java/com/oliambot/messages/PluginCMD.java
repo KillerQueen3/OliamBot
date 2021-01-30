@@ -37,13 +37,13 @@ public class PluginCMD implements MessageCatcher {
         }
     }
 
-    @Catch(entry = "^禁用\\S+", permission = Catch.ADMIN)
+    @Catch(entry = "^=禁用\\S+", permission = Catch.ADMIN)
     public static void disable(Member sender, MessageChain chain) {
         String name = chain.contentToString().replaceFirst("禁用", "");
         sender.getGroup().sendMessage(PluginManager.disablePlugin(name, sender.getGroup().getId())? "成功！": ("未找到" + name));
     }
 
-    @Catch(entry = "^启用\\S+", permission = Catch.ADMIN)
+    @Catch(entry = "^=启用\\S+", permission = Catch.ADMIN)
     public static void enable(Member sender, MessageChain chain) {
         String name = chain.contentToString().replaceFirst("启用", "");
         sender.getGroup().sendMessage(PluginManager.enablePlugin(name, sender.getGroup().getId())? "成功！": ("未找到" + name));

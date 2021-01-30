@@ -8,7 +8,7 @@ import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.MessageChain;
 
 public class Control implements MessageCatcher {
-    @Catch(entry = "^=.+", permission = Catch.ADMIN)
+    @Catch(entry = "^=.+")
     public static void control(Member sender, MessageChain chain) {
         String cmd = chain.contentToString().replaceAll("=", "");
         switch (cmd) {

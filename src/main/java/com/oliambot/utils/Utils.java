@@ -6,7 +6,6 @@ import com.google.gson.reflect.TypeToken;
 import com.oliambot.entity.Chara;
 import com.oliambot.entity.History;
 import com.oliambot.entity.PixivImage;
-import com.oliambot.entity.Trans;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -34,11 +33,11 @@ public class Utils {
     }
 
     public static String getTrans(String keyword) {
-        String[] keywords = keywordReplace(keyword).toLowerCase().split(" ");
+        String[] keywords = keyword.toLowerCase().split(" ");
         for (int i = 0; i < keywords.length; i++) {
             keywords[i] = Utils.getSingleTrans(keywords[i]);
         }
-        return StringUtils.join(keywords, " ");
+        return keywordReplace(StringUtils.join(keywords, " "));
     }
 
     @NotNull
@@ -61,22 +60,19 @@ public class Utils {
 
     @NotNull
     private static Map<String, String> getTrans() {
-        Map<String, String> res = new HashMap<>();
         try {
             FileReader reader = new FileReader("./resource/trans.json");
             Gson gson = new Gson();
-            List<Trans> json = gson.fromJson(reader, new TypeToken<List<Trans>>() {
+            Map<String, String> read = gson.fromJson(reader, new TypeToken<Map<String, String>>() {
             }.getType());
-            for (Trans t : json) {
-                if (t.translation != null && t.translation.length() > 0) {
-                    res.putIfAbsent(t.translation.toLowerCase(), t.text);
-                }
-            }
             System.out.println("翻译读取成功！");
+            if (read != null) {
+                return read;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return res;
+        return new HashMap<>();
     }
 
     @NotNull
@@ -174,14 +170,16 @@ public class Utils {
     }
 
     public static void writeHistory(History history) {
-        Gson gson = new Gson();
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().create();
         try {
             File file = new File("./resource/history.json");
             if (!file.exists()) {
                 file.createNewFile();
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-            List<History> historyList = gson.fromJson(br, new TypeToken<List<History>>() {}.getType());
+            List<History> historyList = gson.fromJson(br, new TypeToken<List<History>>() {
+            }.getType());
             if (historyList == null)
                 historyList = new LinkedList<>();
             br.close();

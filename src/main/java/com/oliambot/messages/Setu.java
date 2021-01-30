@@ -10,12 +10,10 @@ import com.oliambot.utils.MyLog;
 import com.oliambot.utils.Utils;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
-import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.MessageUtils;
+import net.mamoe.mirai.message.data.*;
 
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -23,10 +21,18 @@ import java.util.concurrent.TimeUnit;
 public class Setu implements MessageCatcher {
     @Catch(entry = "^来[点份张].*[色涩]图.*")
     public static void search(Member sender, MessageChain chain) {
+        List<String> banned = TextReader.getStrings("bannedTags", "-");
+        String content = chain.contentToString();
+        for (String b : banned) {
+            if (content.contains(b)) {
+                sender.getGroup().sendMessage(new At(sender).plus("不准" + b + "！"));
+                return;
+            }
+        }
         sender.getGroup().sendMessage(TextReader.getText("requireImageReply", sender));
-        String cmd = SetuCenter.SEARCH + chain.contentToString().replaceAll("[来点份张涩色图]", "");
-        Utils.writeHistory(new History(sender.getNameCard(), sender.getId(), sender.getGroup().getName(), sender.getGroup().getId(), cmd, "SEARCH"));
-        sendImage(cmd, sender.getGroup(), true);
+        String cmd = SetuCenter.SEARCH + content.replaceAll("^来[点份张]", "").replaceAll("[涩色]图.*", "");
+        long res = sendImage(cmd, sender.getGroup(), true);
+        Utils.writeHistory(new History(sender.getNameCard(), sender.getId(), sender.getGroup().getName(), sender.getGroup().getId(), cmd, "SEARCH", res));
     }
 
     @Catch(entry = "^重置记录\\S+.*")
@@ -46,16 +52,16 @@ public class Setu implements MessageCatcher {
         String cmd = SetuCenter.getMore(sender.getGroup().getId());
         if (cmd == null)
             return;
-        Utils.writeHistory(new History(sender.getNameCard(), sender.getId(), sender.getGroup().getName(), sender.getGroup().getId(), cmd, "MORE"));
         sender.getGroup().sendMessage(TextReader.getText("moreImageReply", sender));
-        sendImage(cmd, sender.getGroup(), false);
+        long res = sendImage(cmd, sender.getGroup(), false);
+        Utils.writeHistory(new History(sender.getNameCard(), sender.getId(), sender.getGroup().getName(), sender.getGroup().getId(), cmd, "MORE", res));
     }
 
     @Catch(entry = "^来点推荐.*|^推荐[色涩]图.*")
     public static void recommend(Member sender, MessageChain chain) {
-        Utils.writeHistory(new History(sender.getNameCard(), sender.getId(), sender.getGroup().getName(), sender.getGroup().getId(), null, "RECOMMEND"));
         sender.getGroup().sendMessage(TextReader.getText("recommendReply", sender));
-        sendImage(SetuCenter.RECOMMEND, sender.getGroup(), true);
+        long res = sendImage(SetuCenter.RECOMMEND, sender.getGroup(), true);
+        Utils.writeHistory(new History(sender.getNameCard(), sender.getId(), sender.getGroup().getName(), sender.getGroup().getId(), null, "RECOMMEND", res));
     }
 
     @Catch(entry = "^查图\\d+")
@@ -124,7 +130,7 @@ public class Setu implements MessageCatcher {
         }
     }
 
-    private static void sendImage(String cmd, Group group, boolean needMore) {
+    private static long sendImage(String cmd, Group group, boolean needMore) {
         PixivImage image = SetuCenter.cmd(cmd, group.getId());
         if (image.pid < 0) {
             group.sendMessage(TextReader.getText("sendImageFailed").plus(SetuCenter.getErrorString(image.pid)));
@@ -133,5 +139,6 @@ public class Setu implements MessageCatcher {
                 SetuCenter.putMore(group.getId(), cmd);
             SetuCenter.sendImage(image, group);
         }
+        return image.pid;
     }
 }

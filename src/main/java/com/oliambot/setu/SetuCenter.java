@@ -12,18 +12,16 @@ import net.mamoe.mirai.message.data.MessageUtils;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SetuCenter {
-    private static final Map<Long, String> BEFORE = new HashMap<>();
-
     public static final String SEARCH = "search ";
     public static final String RECOMMEND = "recommend";
     public static final String ILLUST = "illust ";
     public static final String ARTIST = "artist ";
-
     public static final String H_IMG = "./resource/h.png";
+    private static final Map<Long, String> BEFORE = new ConcurrentHashMap<>();
 
     public static String getErrorString(long code) {
         switch ((int) code) {
@@ -94,8 +92,7 @@ public class SetuCenter {
         try {
             if (!imageInfo.r18) {
                 group.sendMessage(group.uploadImage(new URL(imageInfo.url)).plus(imageInfo.getInfo()));
-            }
-            else {
+            } else {
                 if (Settings.pixivR18) {
                     BufferedImage image = NetImageTool.getUrlImg(url);
                     if (image != null) {

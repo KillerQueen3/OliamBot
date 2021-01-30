@@ -14,8 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class TextReader {
     private static final String FILE_PATH = "./resource/message.json";
@@ -28,7 +27,8 @@ public class TextReader {
         }
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-            Map<String, String> res = new Gson().fromJson(br, new TypeToken<Map<String, String>>() {}.getType());
+            Map<String, String> res = new Gson().fromJson(br, new TypeToken<Map<String, String>>() {
+            }.getType());
             if (res == null) {
                 throw new LoadException(FILE_PATH + "空文件！");
             }
@@ -70,5 +70,14 @@ public class TextReader {
             return new At(sender).plus(ran.replaceAll("\\[at]", ""));
         }
         return MessageUtils.newChain(ran);
+    }
+
+    public static List<String> getStrings(String key, String split) {
+        String r = TEXTS.getOrDefault(key, null);
+        if (r == null) {
+            return new ArrayList<>();
+        }
+        String[] sp = r.split(split);
+        return Arrays.asList(sp);
     }
 }

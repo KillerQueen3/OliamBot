@@ -12,5 +12,6 @@
   "unknownError": "错误：未知错误。解决办法：我也不知道。",
   "noArtistIllust": "用户id不存在或该用户没有作品。",
   "noSuchIllust": "没有相关作品或作品已删除。",
-  "noSingleImage": "未搜索到单张作品，当前设置只发送单张作品。"
+  "noSingleImage": "未搜索到单张作品，当前设置只发送单张作品。",
+  "bannedTags": "男同-基佬-gay-搞基"
 }

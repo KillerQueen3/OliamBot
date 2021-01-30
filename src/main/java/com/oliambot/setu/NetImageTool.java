@@ -17,39 +17,40 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.Duration;
-import java.util.*;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.*;
 
 public class NetImageTool {
     private final static String LOLICON_API = "https://api.lolicon.app/setu/";
+    private static final int[] USERS = new int[]{250, 500, 1000, 5000, 10000, 20000};
+    private static final List<PixivImage> SETU_FROM_LOLICON = new CopyOnWriteArrayList<>();
+    private static final List<PixivImage> RECOMMEND = new CopyOnWriteArrayList<>();
 
     private static String getPixivInfoApi() {
         return "http://" + Settings.pixivHost + ":" + Settings.pixivPort + "/pixiv/";
     }
 
-    private static final int[] USERS = new int[] {250, 500, 1000, 5000, 10000, 20000};
-
     @NotNull
     private static List<Integer> getUpUsers(int bottom) {
         List<Integer> res = new LinkedList<>();
-        for (int c: USERS) {
+        for (int c : USERS) {
             if (c > bottom)
                 res.add(c);
         }
         return res;
     }
 
-    private static final Stack<PixivImage> SETU_FROM_LOLICON = new Stack<>();
-
     private static void addSetu() {
-        String url = LOLICON_API + "?apikey=" + Settings.loliconApiKey + "&size1200=&num=10&r18=" + (Settings.pixivR18? "2": "0");
+        String url = LOLICON_API + "?apikey=" + Settings.loliconApiKey + "&size1200=&num=10&r18=" + (Settings.pixivR18 ? "2" : "0");
         MyLog.info("Getting {}", url);
         String t = HttpRequest.get(url).connectTimeout(Duration.ofSeconds(10)).execute().asString();
         JsonObject object = (JsonObject) JsonParser.parseString(t);
         if (object.get("code").getAsInt() == 0) {
             JsonArray info = object.getAsJsonArray("data").getAsJsonArray();
-            List<PixivImage> res = new Gson().fromJson(info, new TypeToken<List<PixivImage>>(){}.getType());
+            List<PixivImage> res = new Gson().fromJson(info, new TypeToken<List<PixivImage>>() {
+            }.getType());
             if (res == null)
                 return;
             SETU_FROM_LOLICON.addAll(res);
@@ -66,10 +67,8 @@ public class NetImageTool {
         if (SETU_FROM_LOLICON.size() == 0) {
             return PixivImage.API_ERROR;
         }
-        return SETU_FROM_LOLICON.pop();
+        return SETU_FROM_LOLICON.remove(0);
     }
-
-    static List<PixivImage> RECOMMEND = new LinkedList<>();
 
     public static void autoLoginThreadStart(int intervalMin) {
         Thread auto = new Thread(() -> {
@@ -94,7 +93,7 @@ public class NetImageTool {
             if (object.get("code").getAsInt() != 200) {
                 MyLog.failed(object.get("message").getAsString());
             }
-           // MyLog.info("PIXIV LOGIN");
+            // MyLog.info("PIXIV LOGIN");
         } catch (Exception e) {
             MyLog.error(e);
         }
@@ -129,8 +128,7 @@ public class NetImageTool {
             addRecommend();
         if (RECOMMEND.size() == 0)
             return PixivImage.API_ERROR;
-        int index = (int) (RECOMMEND.size() * Math.random());
-        return RECOMMEND.remove(index);
+        return RECOMMEND.remove(0);
     }
 
     @NotNull
@@ -152,7 +150,7 @@ public class NetImageTool {
     }
 
     public static PixivImage getSeTuInfo(long groupID, String tag, String trans, int num, boolean r18) {
-        String w = trans + (r18? " R-18": "");
+        String w = trans + (r18 ? " R-18" : "");
         List<PixivImage> works = Utils.getSearchCache(groupID, w);
         if (works == null) {
             try {
@@ -176,14 +174,14 @@ public class NetImageTool {
                 } catch (Exception e) {
                     MyLog.error(e);
                 }
-                if (set.size() < 15 && num > 500) {
-                    set.addAll(searchSeTu(trans, 500, r18));
-                }
                 if (set.size() < 15) {
                     List<String> moreTrans = Utils.autoComplete(tag);
                     for (String more : moreTrans) {
                         set.addAll(searchSeTu(more, num, r18));
                     }
+                }
+                if (set.size() < 15 && num > 500) {
+                    set.addAll(searchSeTu(trans, 500, r18));
                 }
                 works = new LinkedList<>(set);
                 MyLog.info("Search: {}, trans: {}, result size: {}", tag, trans, works.size());
@@ -299,7 +297,7 @@ public class NetImageTool {
     @NotNull
     public static PixivImage[] getUrls(@NotNull PixivImage image) {
         if (image.p == 1)
-            return new PixivImage[] {image};
+            return new PixivImage[]{image};
         else {
             PixivImage im = new PixivImage(image);
             PixivImage[] res = new PixivImage[image.p];
@@ -316,7 +314,7 @@ public class NetImageTool {
 
     public static void r18Image(@NotNull BufferedImage source) {
         Graphics g = source.getGraphics();
-        g.drawRect(0, 0, 1 ,1);
+        g.drawRect(0, 0, 1, 1);
         g.dispose();
     }
 
@@ -337,7 +335,7 @@ public class NetImageTool {
         long uid = imageInfo.get("user_id").getAsLong();
         boolean r18 = imageInfo.get("r18").getAsBoolean();
         int p = imageInfo.get("page_count").getAsInt();
-        String urls = Settings.pixivLarge? imageInfo.get("large_url").getAsString():
+        String urls = Settings.pixivLarge ? imageInfo.get("large_url").getAsString() :
                 imageInfo.get("medium_url").getAsString();
         String urlLarge = imageInfo.get("original_url").getAsString();
         urlLarge = urlLarge.replaceAll("i\\.pximg\\.net", "i.pixiv.cat");

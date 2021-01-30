@@ -76,11 +76,11 @@ public class MessageCenter {
             if (r.matches(regex)) {
                 MMethod mMethod = onGroup.get(regex);
                 if (mMethod.permission == Catch.ADMIN && sender.getPermission() == MemberPermission.MEMBER) {
-                    sender.getGroup().sendMessage("需要管理员权限。");
+                    //sender.getGroup().sendMessage("需要管理员权限。");
                     return;
                 }
                 if (mMethod.permission == Catch.OWNER && sender.getPermission() != MemberPermission.OWNER) {
-                    sender.getGroup().sendMessage("需要群主权限。");
+                    //sender.getGroup().sendMessage("需要群主权限。");
                     return;
                 }
                 try {
