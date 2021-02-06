@@ -6,6 +6,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 public class Settings {
     public static long botID;
     public static String botPW;
+    public static long superUser;
     public static boolean pixivLarge;
     public static boolean pixivR18;
     public static String pixivID;
@@ -23,6 +24,7 @@ public class Settings {
             PropertiesConfiguration config = new PropertiesConfiguration("settings.properties");
             botID = config.getLong("botQQ");
             botPW = config.getString("botPassword");
+            superUser = config.getLong("superUser", 0);
             pixivID = config.getString("pixivID");
             pixivPWD = config.getString("pixivPWD");
             pixivLarge = config.getBoolean("pixivImgLarge", false);

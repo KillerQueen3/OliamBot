@@ -5,6 +5,7 @@ import com.oliambot.entity.PixivImage;
 import com.oliambot.inf.Catch;
 import com.oliambot.inf.MessageCatcher;
 import com.oliambot.setu.ImageSearch;
+import com.oliambot.setu.NetImageTool;
 import com.oliambot.setu.SetuCenter;
 import com.oliambot.utils.MyLog;
 import com.oliambot.utils.Utils;
@@ -91,7 +92,7 @@ public class Setu implements MessageCatcher {
             return;
         }
         sender.getGroup().sendMessage(TextReader.getText("requireImageReply", sender));
-        String[][] res = ImageSearch.searchAscii2d(ImageSearch.getImageURL(image));
+        String[][] res = ImageSearch.searchAscii2d(NetImageTool.getImageURL(image));
         if (res == null) {
             sender.getGroup().sendMessage("搜索失败！");
             return;

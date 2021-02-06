@@ -80,7 +80,7 @@ public class SetuCenter {
             return group.uploadImage(file);
         }
         MyLog.failed("FILE NOT FOUND: {}", fileName);
-        return MessageUtils.newChain("文件不存在： " + fileName);
+        return MessageUtils.newChain("[不存在的图片]");
     }
 
     public static void sendImage(PixivImage imageInfo, Group group) {

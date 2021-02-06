@@ -8,6 +8,7 @@ import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
+import net.mamoe.mirai.message.FriendMessageEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +32,14 @@ public class PluginManager {
             public ListeningStatus onGroup(GroupMessageEvent event) throws Exception {
                 for (PluginLoader loader : PLUGINS.values()) {
                     loader.catchGroupMessage(event.getSender(), event.getMessage());
+                }
+                return ListeningStatus.LISTENING;
+            }
+
+            @EventHandler
+            public ListeningStatus onFriend(FriendMessageEvent event) throws Exception {
+                for (PluginLoader loader : PLUGINS.values()) {
+                    loader.catchFriendMessage(event.getSender(), event.getMessage());
                 }
                 return ListeningStatus.LISTENING;
             }

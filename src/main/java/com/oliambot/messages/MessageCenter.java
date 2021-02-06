@@ -4,10 +4,8 @@ import com.oliambot.exception.CatcherIllegalException;
 import com.oliambot.inf.Catch;
 import com.oliambot.inf.MessageCatcher;
 import com.oliambot.utils.MyLog;
-import net.mamoe.mirai.contact.Friend;
-import net.mamoe.mirai.contact.Member;
-import net.mamoe.mirai.contact.MemberPermission;
-import net.mamoe.mirai.contact.User;
+import com.oliambot.utils.Settings;
+import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.jetbrains.annotations.NotNull;
@@ -75,6 +73,10 @@ public class MessageCenter {
         for (String regex: onGroup.keySet()) {
             if (r.matches(regex)) {
                 MMethod mMethod = onGroup.get(regex);
+                if (mMethod.permission == Catch.SUPER_USER && sender.getId() != Settings.superUser) {
+                    //sender.getGroup().sendMessage("需要超级用户权限。");
+                    return;
+                }
                 if (mMethod.permission == Catch.ADMIN && sender.getPermission() == MemberPermission.MEMBER) {
                     //sender.getGroup().sendMessage("需要管理员权限。");
                     return;
@@ -96,8 +98,13 @@ public class MessageCenter {
         String r = chain.contentToString();
         for (String regex: onFriend.keySet()) {
             if (r.matches(regex)) {
+                MMethod mMethod = onFriend.get(regex);
+                if (mMethod.permission == Catch.SUPER_USER && sender.getId() != Settings.superUser) {
+                    sender.sendMessage("需要超级用户权限。");
+                    return;
+                }
                 try {
-                    onFriend.get(regex).method.invoke(null, sender, chain);
+                    mMethod.method.invoke(null, sender, chain);
                 } catch (Exception e) {
                     MyLog.error(e);
                 }

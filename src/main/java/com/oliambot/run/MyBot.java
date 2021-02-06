@@ -15,11 +15,15 @@ import net.mamoe.mirai.network.LoginFailedException;
 import net.mamoe.mirai.utils.BotConfiguration;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+
 public class MyBot {
     public final static Bot bot = BotFactoryJvm.newBot(Settings.botID, Settings.botPW, new BotConfiguration() {
         {
             fileBasedDeviceInfo("deviceInfo.json");
             setProtocol(MiraiProtocol.ANDROID_PHONE);
+            redirectBotLogToDirectory(new File("./log"));
+            redirectNetworkLogToDirectory(new File("./log"));
         }
     });
     public static long startTime;

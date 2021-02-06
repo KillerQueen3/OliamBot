@@ -14,12 +14,6 @@ import java.nio.charset.StandardCharsets;
 public class ImageSearch {
     private static final String ASCII2D = "https://ascii2d.net/search/url/";
 
-    public static String getImageURL(Image image) {
-        return "http://gchat.qpic.cn/gchatpic_new/0/0-0-" +
-                image.getImageId().substring(1, 37).replaceAll("-", "") +
-                "/0?term=2";
-    }
-
     private static String getInfo(String requestURL) {
         MyLog.info("Getting {}", requestURL);
         try {

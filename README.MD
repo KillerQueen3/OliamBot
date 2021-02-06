@@ -1,8 +1,5 @@
 # OliamBot
-
--------------------------
-
-基于 [mirai](https://github.com/mamoe/mirai) 的qq聊天机器人，以~~R18~~色图发送为主要功能。具有部署简单，有一定扩展性的特点。
+基于 [mirai](https://github.com/mamoe/mirai) 的qq聊天机器人，以~~R18~~色图发送为主要功能。具有部署简单，有一定 [扩展性](https://github.com/KillerQueen3/OliamBot/blob/master/plugins/README.MD) 的特点。
 * 根据关键词查找pixiv上相关图片
 * 以pixiv图片id找图
 * 以pixiv用户id发送用户随机作品

@@ -19,6 +19,7 @@ public @interface Catch {
     int OWNER = 0;
     int ADMIN = 1;
     int MEMBER = 2;
+    int SUPER_USER = 3;
 }
 
 

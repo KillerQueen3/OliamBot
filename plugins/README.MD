@@ -13,10 +13,10 @@
   * 有`com.oliambot.inf.Catch`注解的方法，`Catch`注解说明：
     * `entry`指出触发此方法的消息内容所需匹配的正则表达式（bot使用`String.matches(regex)`方法判断），同一个插件中不可重复；
     * `listen`指出在什么情景触发，有私聊，群聊（默认），两者三种选项；
-    * `permission`指出群聊时所需权限，默认所有人可用。
+    * `permission`指出群聊时所需权限，值为`Catch.SUPER_USER`时仅指定的用户可用，默认所有人可用。
   * 被`Catch`注解的方法要求：
     * 静态方法，最好以`public static void`声明
-    * 两个参数，第一个为`net.mamoe.mirai.contact.User`的子类，第二个为`net.mamoe.mirai.message.data.Message`的子类。
+    * 两个参数，第一个为`net.mamoe.mirai.contact.User`的子类，第二个为`net.mamoe.mirai.message.data.Message`的子类（谁发的，发的什么）。
   * 例子
   ```java
   class MyCatcher implements MessageCatcher {

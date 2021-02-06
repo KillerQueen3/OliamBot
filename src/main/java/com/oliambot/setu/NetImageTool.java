@@ -8,6 +8,7 @@ import com.oliambot.utils.MyLog;
 import com.oliambot.utils.Settings;
 import com.oliambot.utils.Utils;
 import net.dreamlu.mica.http.HttpRequest;
+import net.mamoe.mirai.message.data.Image;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +28,12 @@ public class NetImageTool {
     private static final int[] USERS = new int[]{250, 500, 1000, 5000, 10000, 20000};
     private static final List<PixivImage> SETU_FROM_LOLICON = new CopyOnWriteArrayList<>();
     private static final List<PixivImage> RECOMMEND = new CopyOnWriteArrayList<>();
+
+    public static String getImageURL(Image image) {
+        return "http://gchat.qpic.cn/gchatpic_new/0/0-0-" +
+                image.getImageId().substring(1, 37).replaceAll("-", "") +
+                "/0?term=2";
+    }
 
     private static String getPixivInfoApi() {
         return "http://" + Settings.pixivHost + ":" + Settings.pixivPort + "/pixiv/";
@@ -132,7 +139,7 @@ public class NetImageTool {
     }
 
     @NotNull
-    private static List<PixivImage> searchSeTu(String tag, int num, boolean r18) throws Exception {
+    public static List<PixivImage> searchSeTu(String tag, int num, boolean r18) throws Exception {
         String word = tag + (num > 0 ? " " + num + "users" : "") + (r18 ? " R-18" : "");
         String url = getPixivInfoApi() + "search?limit=" + Settings.pixivSearchNum + "&word=" + word;
         MyLog.info("Getting {}", url);
