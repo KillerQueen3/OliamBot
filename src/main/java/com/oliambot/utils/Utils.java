@@ -1,18 +1,23 @@
 package com.oliambot.utils;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.oliambot.entity.Chara;
 import com.oliambot.entity.History;
 import com.oliambot.entity.PixivImage;
+import net.mamoe.mirai.message.data.Image;
+import net.mamoe.mirai.message.data.Message;
+import net.mamoe.mirai.message.data.MessageChain;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Utils {
     private static final Map<String, String> trans = new HashMap<>();
@@ -32,7 +37,19 @@ public class Utils {
         return keyword;
     }
 
-    public static String getTrans(String keyword) {
+    @NotNull
+    public static List<Image> getImages(@NotNull MessageChain raw) {
+        List<Image> res = new ArrayList<>();
+        for (Message m : raw) {
+            if (m instanceof Image) {
+                res.add((Image) m);
+            }
+        }
+        return res;
+    }
+
+    @NotNull
+    public static String getTrans(@NotNull String keyword) {
         String[] keywords = keyword.toLowerCase().split(" ");
         for (int i = 0; i < keywords.length; i++) {
             keywords[i] = Utils.getSingleTrans(keywords[i]);
@@ -170,21 +187,13 @@ public class Utils {
     }
 
     public static void writeHistory(History history) {
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.setPrettyPrinting().create();
+        Gson gson = new Gson();
         try {
-            File file = new File("./resource/history.json");
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-            List<History> historyList = gson.fromJson(br, new TypeToken<List<History>>() {
-            }.getType());
-            if (historyList == null)
-                historyList = new LinkedList<>();
-            br.close();
-            historyList.add(history);
-            writeToFile(gson.toJson(historyList), file);
+            String str = gson.toJson(history) + ",";
+            FileOutputStream outputStream = new FileOutputStream("./resource/history.txt", true);
+            OutputStreamWriter writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
+            writer.write(str + System.lineSeparator());
+            writer.close();
         } catch (Exception e) {
             MyLog.error(e);
         }

@@ -18,6 +18,7 @@ public class Settings {
     public static boolean pixivRemovePl;
     public static String loliconApiKey;
     public static int lowestNum;
+    public static String pixivToken;
 
     public static void initSettings() throws LoadException {
         try {
@@ -27,6 +28,7 @@ public class Settings {
             superUser = config.getLong("superUser", 0);
             pixivID = config.getString("pixivID");
             pixivPWD = config.getString("pixivPWD");
+            pixivToken = config.getString("pixivToken");
             pixivLarge = config.getBoolean("pixivImgLarge", false);
             pixivR18 = config.getBoolean("pixivR18", false);
             pixivHost = config.getString("pixivHost");

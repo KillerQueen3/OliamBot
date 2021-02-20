@@ -1,7 +1,7 @@
 package com.oliambot.setu;
 
 import com.oliambot.entity.PixivImage;
-import com.oliambot.messages.TextReader;
+import com.oliambot.utils.TextReader;
 import com.oliambot.utils.MyLog;
 import com.oliambot.utils.Settings;
 import com.oliambot.utils.Utils;

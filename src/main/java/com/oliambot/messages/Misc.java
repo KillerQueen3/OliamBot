@@ -6,6 +6,7 @@ import com.oliambot.run.MyBot;
 import com.oliambot.setu.NetImageTool;
 import com.oliambot.utils.MyLog;
 import com.oliambot.utils.Settings;
+import com.oliambot.utils.TextReader;
 import net.dreamlu.mica.http.HttpRequest;
 import net.mamoe.mirai.contact.Friend;
 import net.mamoe.mirai.contact.Group;

@@ -3,7 +3,7 @@ package com.oliambot.run;
 import com.oliambot.exception.CatcherIllegalException;
 import com.oliambot.exception.LoadException;
 import com.oliambot.messages.MessageCenter;
-import com.oliambot.messages.TextReader;
+import com.oliambot.utils.TextReader;
 import com.oliambot.plugins.PluginManager;
 import com.oliambot.setu.NetImageTool;
 import com.oliambot.utils.MyLog;

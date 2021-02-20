@@ -93,9 +93,11 @@ public class NetImageTool {
     }
 
     public static void pixivLogin() {
-        String url = getPixivInfoApi() + "login?name=" + Settings.pixivID + "&pwd=" + Settings.pixivPWD;
+        //String url = getPixivInfoApi() + "login?name=" + Settings.pixivID + "&pwd=" + Settings.pixivPWD;
+        String url = getPixivInfoApi() + "token?token=" + Settings.pixivToken;
         try {
-            String t = HttpRequest.get(url).connectTimeout(Duration.ofSeconds(5)).execute().asString();
+            //String t = HttpRequest.get(url).connectTimeout(Duration.ofSeconds(5)).execute().asString();
+            String t = HttpRequest.post(url).connectTimeout(Duration.ofSeconds(5)).execute().asString();
             JsonObject object = (JsonObject) JsonParser.parseString(t);
             if (object.get("code").getAsInt() != 200) {
                 MyLog.failed(object.get("message").getAsString());
@@ -205,7 +207,8 @@ public class NetImageTool {
         } else {
             MyLog.info("Read cache: tag: {} size: {}", w, works.size());
             if (works.size() == 0) {
-                return PixivImage.NO_MORE_PICTURES;
+                Utils.cleanCache(groupID, w);
+                return getSeTuInfo(groupID, tag, trans, num , r18);
             }
         }
         PixivImage image = getRandomImg(works, Settings.pixivRemovePl);

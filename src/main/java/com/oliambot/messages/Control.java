@@ -5,7 +5,6 @@ import com.oliambot.inf.MessageCatcher;
 import com.oliambot.run.Run;
 import com.oliambot.utils.Utils;
 import net.mamoe.mirai.contact.Friend;
-import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.MessageChain;
 
 public class Control implements MessageCatcher {

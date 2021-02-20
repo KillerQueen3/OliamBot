@@ -14,7 +14,6 @@ public @interface Catch {
 
     int ON_GROUP = 0;
     int ON_FRIEND = 1;
-    int BOTH = 2;
 
     int OWNER = 0;
     int ADMIN = 1;

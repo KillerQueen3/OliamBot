@@ -8,6 +8,7 @@ import com.oliambot.setu.ImageSearch;
 import com.oliambot.setu.NetImageTool;
 import com.oliambot.setu.SetuCenter;
 import com.oliambot.utils.MyLog;
+import com.oliambot.utils.TextReader;
 import com.oliambot.utils.Utils;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
@@ -36,7 +37,7 @@ public class Setu implements MessageCatcher {
         Utils.writeHistory(new History(sender.getNameCard(), sender.getId(), sender.getGroup().getName(), sender.getGroup().getId(), cmd, "SEARCH", res));
     }
 
-    @Catch(entry = "^重置记录\\S+.*")
+    @Catch(entry = "^重置记录\\S+")
     public static void clean(Member sender, MessageChain chain) {
         String c = chain.contentToString().replaceAll("重置记录", "");
         boolean r18 = c.matches(".*[rR]-?18.*");
@@ -48,7 +49,7 @@ public class Setu implements MessageCatcher {
                 ? "成功!" : "未找到相关记录!");
     }
 
-    @Catch(entry = "^[多再][来色涩]点.*|^不够[涩色].*")
+    @Catch(entry = "^[多再][来色涩]点|^不够[涩色]")
     public static void more(Member sender, MessageChain chain) {
         String cmd = SetuCenter.getMore(sender.getGroup().getId());
         if (cmd == null)
@@ -79,55 +80,48 @@ public class Setu implements MessageCatcher {
                 sender.getGroup(), true);
     }
 
-    @Catch(entry = "^搜图[\\s\\S]*")
+    @Catch(entry = "^搜图[\\s\\S]+")
     public static void searchByImage(Member sender, MessageChain chain) {
-        Image image = null;
-        for (Message msg : chain) {
-            if (msg instanceof Image) {
-                image = (Image) msg;
-                break;
-            }
-        }
-        if (image == null) {
-            return;
-        }
+        List<Image> images = Utils.getImages(chain);
         sender.getGroup().sendMessage(TextReader.getText("requireImageReply", sender));
-        String[][] res = ImageSearch.searchAscii2d(NetImageTool.getImageURL(image));
-        if (res == null) {
-            sender.getGroup().sendMessage("搜索失败！");
-            return;
-        }
-        ExecutorService service = Executors.newCachedThreadPool();
-        service.submit(() -> {
-            try {
-                sender.getGroup().sendMessage(MessageUtils.newChain("ascii2d色合检索：\n")
-                        .plus(sender.getGroup().uploadImage(new URL(res[0][0])))
-                        .plus("\n链接: " + res[0][1]));
-            } catch (Exception e) {
-                sender.getGroup().sendMessage("ascii2d色合检索：\n图片获取失败！\n链接: " + res[0][1]);
+        for (Image image : images) {
+            String[][] res = ImageSearch.searchAscii2d(NetImageTool.getImageURL(image));
+            if (res == null) {
+                sender.getGroup().sendMessage("搜索失败！");
+                return;
             }
-        });
-        if (res[1] == null) {
-            sender.getGroup().sendMessage("特征搜索失败！");
-        } else {
+            ExecutorService service = Executors.newCachedThreadPool();
             service.submit(() -> {
                 try {
-                    sender.getGroup().sendMessage(MessageUtils.newChain("ascii2d特征检索：\n")
-                            .plus(sender.getGroup().uploadImage(new URL(res[1][0])))
-                            .plus("\n链接: " + res[1][1]));
+                    sender.getGroup().sendMessage(MessageUtils.newChain("ascii2d色合检索：\n")
+                            .plus(sender.getGroup().uploadImage(new URL(res[0][0])))
+                            .plus("\n链接: " + res[0][1]));
                 } catch (Exception e) {
-                    sender.getGroup().sendMessage("ascii2d特征检索：\n图片获取失败！\n链接: " + res[1][1]);
+                    sender.getGroup().sendMessage("ascii2d色合检索：\n图片获取失败！\n链接: " + res[0][1]);
                 }
             });
-        }
-        service.shutdown();
-        try {
-            if (!service.awaitTermination(30, TimeUnit.SECONDS)) {
-                service.shutdownNow();
+            if (res[1] == null) {
+                sender.getGroup().sendMessage("特征搜索失败！");
+            } else {
+                service.submit(() -> {
+                    try {
+                        sender.getGroup().sendMessage(MessageUtils.newChain("ascii2d特征检索：\n")
+                                .plus(sender.getGroup().uploadImage(new URL(res[1][0])))
+                                .plus("\n链接: " + res[1][1]));
+                    } catch (Exception e) {
+                        sender.getGroup().sendMessage("ascii2d特征检索：\n图片获取失败！\n链接: " + res[1][1]);
+                    }
+                });
             }
-        } catch (Exception e) {
-            MyLog.error(e);
-            e.printStackTrace();
+            service.shutdown();
+            try {
+                if (!service.awaitTermination(30, TimeUnit.SECONDS)) {
+                    service.shutdownNow();
+                }
+            } catch (Exception e) {
+                MyLog.error(e);
+                e.printStackTrace();
+            }
         }
     }
 

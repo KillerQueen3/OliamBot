@@ -5,7 +5,10 @@ import com.oliambot.inf.Catch;
 import com.oliambot.inf.MessageCatcher;
 import com.oliambot.utils.MyLog;
 import com.oliambot.utils.Settings;
-import net.mamoe.mirai.contact.*;
+import net.mamoe.mirai.contact.Friend;
+import net.mamoe.mirai.contact.Member;
+import net.mamoe.mirai.contact.MemberPermission;
+import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.jetbrains.annotations.NotNull;
@@ -37,10 +40,10 @@ public class MessageCenter {
     }
 
     public void addMethod(Method m, @NotNull Catch c) {
-        if (c.listen() == Catch.ON_GROUP || c.listen() == Catch.BOTH) {
+        if (c.listen() == Catch.ON_GROUP) {
             onGroup.putIfAbsent(c.entry(), new MMethod(m, c.permission()));
         }
-        if (c.listen() == Catch.ON_FRIEND || c.listen() == Catch.BOTH) {
+        if (c.listen() == Catch.ON_FRIEND) {
             onFriend.putIfAbsent(c.entry(), new MMethod(m, c.permission()));
         }
     }

@@ -5,7 +5,6 @@ import com.oliambot.inf.MessageCatcher;
 import com.oliambot.plugins.PluginManager;
 import com.oliambot.utils.MyLog;
 import net.mamoe.mirai.contact.Friend;
-import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.MessageChain;
 

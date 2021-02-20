@@ -1,9 +1,8 @@
-package com.oliambot.messages;
+package com.oliambot.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.oliambot.exception.LoadException;
-import com.oliambot.utils.MyLog;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.MessageChain;
