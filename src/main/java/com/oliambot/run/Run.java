@@ -9,6 +9,7 @@ import com.oliambot.setu.NetImageTool;
 import com.oliambot.utils.MyLog;
 import com.oliambot.utils.Settings;
 import com.oliambot.utils.Utils;
+import net.mamoe.mirai.event.EventChannel;
 import net.mamoe.mirai.event.Events;
 
 public class Run {
@@ -41,11 +42,11 @@ public class Run {
         }
         Utils.reload();
         NetImageTool.autoLoginThreadStart(Settings.pixivInterval);
-        Events.registerEvents(MyBot.bot, MyBot.getListener(center));
 
+        MyBot.bot.getEventChannel().registerListenerHost(MyBot.getListener(center));
         try {
             PluginManager.loadPlugins();
-            Events.registerEvents(MyBot.bot, PluginManager.getHost());
+            MyBot.bot.getEventChannel().registerListenerHost(PluginManager.getHost());
         } catch (Exception e) {
             MyLog.error(e);
         }

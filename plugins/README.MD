@@ -17,7 +17,7 @@
     * `permission`指出群聊时所需权限，值为`Catch.SUPER_USER`时仅指定的用户可用，默认所有人可用。
   * 被`Catch`注解的方法要求：
     * 静态方法，最好以`public static void`声明
-    * 两个参数，第一个为`net.mamoe.mirai.contact.Member`或`Friend`，第二个为`net.mamoe.mirai.message.data.MessageChain`（谁发的，发的什么），即使用不到也须声明。
+    * 参数可选`net.mamoe.mirai.contact.Member`或`Friend`，`net.mamoe.mirai.message.data.MessageChain`中的一个或两个（视需要而定）。
   * 例子
   ```java
   class MyPlugin implements Plugin {

@@ -7,6 +7,8 @@ import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
+import net.mamoe.mirai.message.data.PlainText;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -50,25 +52,26 @@ public class TextReader {
     public static MessageChain getText(String key, Member sender) {
         String res = TEXTS.getOrDefault(key, key);
         if (res.contains("[at]") && sender != null) {
-            return new At(sender).plus(res.replaceAll("\\[at]", ""));
+            return new At(sender.getId()).plus(res.replaceAll("\\[at]", ""));
         }
-        return MessageUtils.newChain(res);
+        return MessageUtils.newChain(new PlainText(res));
     }
 
+    @NotNull
     public static MessageChain getText(String key) {
-        return MessageUtils.newChain(TEXTS.getOrDefault(key, key));
+        return MessageUtils.newChain(new PlainText(TEXTS.getOrDefault(key, key)));
     }
 
     public static MessageChain getRandomText(String key, String split, Member sender) {
         String res = TEXTS.getOrDefault(key, null);
         if (res == null)
-            return MessageUtils.newChain(key);
+            return MessageUtils.newChain(new PlainText(key));
         String[] r = res.split(split);
         String ran = r[(int) (Math.random() * r.length)];
         if (ran.contains("[at]") && sender != null) {
-            return new At(sender).plus(ran.replaceAll("\\[at]", ""));
+            return new At(sender.getId()).plus(ran.replaceAll("\\[at]", ""));
         }
-        return MessageUtils.newChain(ran);
+        return MessageUtils.newChain(new PlainText(ran));
     }
 
     public static List<String> getStrings(String key, String split) {

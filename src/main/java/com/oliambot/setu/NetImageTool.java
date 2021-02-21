@@ -9,6 +9,7 @@ import com.oliambot.utils.Settings;
 import com.oliambot.utils.Utils;
 import net.dreamlu.mica.http.HttpRequest;
 import net.mamoe.mirai.message.data.Image;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,12 +30,15 @@ public class NetImageTool {
     private static final List<PixivImage> SETU_FROM_LOLICON = new CopyOnWriteArrayList<>();
     private static final List<PixivImage> RECOMMEND = new CopyOnWriteArrayList<>();
 
-    public static String getImageURL(Image image) {
+    @NotNull
+    public static String getImageURL(@NotNull Image image) {
         return "http://gchat.qpic.cn/gchatpic_new/0/0-0-" +
                 image.getImageId().substring(1, 37).replaceAll("-", "") +
                 "/0?term=2";
     }
 
+    @NotNull
+    @Contract(pure = true)
     private static String getPixivInfoApi() {
         return "http://" + Settings.pixivHost + ":" + Settings.pixivPort + "/pixiv/";
     }
@@ -208,7 +212,7 @@ public class NetImageTool {
             MyLog.info("Read cache: tag: {} size: {}", w, works.size());
             if (works.size() == 0) {
                 Utils.cleanCache(groupID, w);
-                return getSeTuInfo(groupID, tag, trans, num , r18);
+                return getSeTuInfo(groupID, tag, trans, num, r18);
             }
         }
         PixivImage image = getRandomImg(works, Settings.pixivRemovePl);

@@ -23,12 +23,12 @@ public class PluginCMD implements MessageCatcher {
     }
 
     @Catch(entry = "^插件列表$")
-    public static void list(Member sender, MessageChain chain) {
+    public static void list(Member sender) {
         sender.getGroup().sendMessage(PluginManager.getPluginList(sender.getGroup().getId()));
     }
 
     @Catch(entry = "^加载插件$", permission = Catch.SUPER_USER, listen = Catch.ON_FRIEND)
-    public static void load(Friend sender, MessageChain chain) throws Exception {
+    public static void load(Friend sender) throws Exception {
         try {
             PluginManager.loadPlugins();
             sender.sendMessage("完成。");
@@ -39,7 +39,7 @@ public class PluginCMD implements MessageCatcher {
     }
 
     @Catch(entry = "^重载插件$", permission = Catch.SUPER_USER, listen = Catch.ON_FRIEND)
-    public static void reload(Friend sender, MessageChain chain) throws Exception {
+    public static void reload(Friend sender) throws Exception {
         try {
             PluginManager.dropAll();
             PluginManager.loadPlugins();

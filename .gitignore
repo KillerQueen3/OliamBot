@@ -6,4 +6,5 @@
 *.iml
 /resource/search/*
 /log
+/cache
 settings.properties

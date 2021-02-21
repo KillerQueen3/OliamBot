@@ -1,17 +1,20 @@
 package com.oliambot.setu;
 
 import com.oliambot.entity.PixivImage;
-import com.oliambot.utils.TextReader;
 import com.oliambot.utils.MyLog;
 import com.oliambot.utils.Settings;
+import com.oliambot.utils.TextReader;
 import com.oliambot.utils.Utils;
 import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageUtils;
+import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.utils.ExternalResource;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.net.URL;
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -74,13 +77,17 @@ public class SetuCenter {
         }
     }
 
-    public static Message getLocalImage(Group group, String fileName) {
+    public static Message getLocalImage(Group group, String fileName) throws IOException {
         File file = new File(fileName);
         if (file.exists()) {
-            return group.uploadImage(file);
+
+            ExternalResource resource = ExternalResource.create(file);
+            Image image = group.uploadImage(resource);
+            resource.close();
+            return image;
         }
         MyLog.failed("FILE NOT FOUND: {}", fileName);
-        return MessageUtils.newChain("[不存在的图片]");
+        return MessageUtils.newChain(new PlainText("[不存在的图片]"));
     }
 
     public static void sendImage(PixivImage imageInfo, Group group) {
@@ -91,13 +98,19 @@ public class SetuCenter {
         MyLog.info("Send image: {}", url);
         try {
             if (!imageInfo.r18) {
-                group.sendMessage(group.uploadImage(new URL(imageInfo.url)).plus(imageInfo.getInfo()));
+                ExternalResource resource = Utils.getImgFromUrl(imageInfo.url);
+                group.sendMessage(group.uploadImage(resource).plus(imageInfo.getInfo()));
+                resource.close();
             } else {
                 if (Settings.pixivR18) {
                     BufferedImage image = NetImageTool.getUrlImg(url);
                     if (image != null) {
                         NetImageTool.r18Image(image);
-                        group.sendMessage(group.uploadImage(image).plus(imageInfo.getInfo()));
+
+                        ExternalResource resource = ExternalResource.create(Utils.bufferedImageToBytes(image));
+                        group.sendMessage(group.uploadImage(resource).plus(imageInfo.getInfo()));
+
+                        resource.close();
                     } else {
                         group.sendMessage(TextReader.getText("sendImageFailed") + "链接: " + imageInfo.originalUrl);
                     }

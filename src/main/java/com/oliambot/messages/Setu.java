@@ -13,7 +13,10 @@ import com.oliambot.utils.Utils;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.*;
+import net.mamoe.mirai.utils.ExternalResource;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -27,7 +30,7 @@ public class Setu implements MessageCatcher {
         String content = chain.contentToString();
         for (String b : banned) {
             if (content.contains(b)) {
-                sender.getGroup().sendMessage(new At(sender).plus("不准" + b + "！"));
+                sender.getGroup().sendMessage(new At(sender.getId()).plus("不准" + b + "！"));
                 return;
             }
         }
@@ -50,7 +53,7 @@ public class Setu implements MessageCatcher {
     }
 
     @Catch(entry = "^[多再][来色涩]点|^不够[涩色]")
-    public static void more(Member sender, MessageChain chain) {
+    public static void more(Member sender) {
         String cmd = SetuCenter.getMore(sender.getGroup().getId());
         if (cmd == null)
             return;
@@ -60,7 +63,7 @@ public class Setu implements MessageCatcher {
     }
 
     @Catch(entry = "^来点推荐.*|^推荐[色涩]图.*")
-    public static void recommend(Member sender, MessageChain chain) {
+    public static void recommend(Member sender) {
         sender.getGroup().sendMessage(TextReader.getText("recommendReply", sender));
         long res = sendImage(SetuCenter.RECOMMEND, sender.getGroup(), true);
         Utils.writeHistory(new History(sender.getNameCard(), sender.getId(), sender.getGroup().getName(), sender.getGroup().getId(), null, "RECOMMEND", res));
@@ -93,9 +96,11 @@ public class Setu implements MessageCatcher {
             ExecutorService service = Executors.newCachedThreadPool();
             service.submit(() -> {
                 try {
-                    sender.getGroup().sendMessage(MessageUtils.newChain("ascii2d色合检索：\n")
-                            .plus(sender.getGroup().uploadImage(new URL(res[0][0])))
+                    ExternalResource resource = Utils.getImgFromUrl(res[0][0]);
+                    sender.getGroup().sendMessage(MessageUtils.newChain(new PlainText("ascii2d色合检索：\n"))
+                            .plus(sender.getGroup().uploadImage(resource))
                             .plus("\n链接: " + res[0][1]));
+                    resource.close();
                 } catch (Exception e) {
                     sender.getGroup().sendMessage("ascii2d色合检索：\n图片获取失败！\n链接: " + res[0][1]);
                 }
@@ -105,9 +110,11 @@ public class Setu implements MessageCatcher {
             } else {
                 service.submit(() -> {
                     try {
-                        sender.getGroup().sendMessage(MessageUtils.newChain("ascii2d特征检索：\n")
-                                .plus(sender.getGroup().uploadImage(new URL(res[1][0])))
+                        ExternalResource resource = Utils.getImgFromUrl(res[1][0]);
+                        sender.getGroup().sendMessage(MessageUtils.newChain(new PlainText("ascii2d特征检索：\n"))
+                                .plus(sender.getGroup().uploadImage(resource))
                                 .plus("\n链接: " + res[1][1]));
+                        resource.close();
                     } catch (Exception e) {
                         sender.getGroup().sendMessage("ascii2d特征检索：\n图片获取失败！\n链接: " + res[1][1]);
                     }

@@ -4,6 +4,7 @@ import com.oliambot.utils.MyLog;
 import net.dreamlu.mica.http.DomMapper;
 import net.dreamlu.mica.http.HttpRequest;
 import net.mamoe.mirai.message.data.Image;
+import org.jetbrains.annotations.Nullable;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -14,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 public class ImageSearch {
     private static final String ASCII2D = "https://ascii2d.net/search/url/";
 
+    @Nullable
     private static String getInfo(String requestURL) {
         MyLog.info("Getting {}", requestURL);
         try {
@@ -32,6 +34,7 @@ public class ImageSearch {
     }
 
     // ascii2d色合检索
+    @Nullable
     private static String[] searchA(String imgURL) {
         String response = getInfo(ASCII2D + URLEncoder.encode(imgURL, StandardCharsets.UTF_8));
         if (response == null) {
@@ -57,6 +60,7 @@ public class ImageSearch {
     }
 
     // ascii2d特征检索
+    @Nullable
     private static String[] searchABovw(String bovw) {
         String response = getInfo(bovw);
         if (response == null) {
@@ -79,6 +83,7 @@ public class ImageSearch {
         }
     }
 
+    @Nullable
     public static String[][] searchAscii2d(String url) {
         MyLog.info("Search by image: {}", url);
         String[] c = searchA(url);

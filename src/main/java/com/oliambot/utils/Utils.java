@@ -8,11 +8,16 @@ import com.oliambot.entity.PixivImage;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.utils.ExternalResource;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,12 +34,33 @@ public class Utils {
         return raw.replaceAll("姬", "姫");
     }
 
+
     private static String getSingleTrans(String keyword) {
         if (chara.containsKey(keyword))
             return chara.get(keyword);
         if (trans.containsKey(keyword))
             return trans.get(keyword);
         return keyword;
+    }
+
+    @NotNull
+    public static byte[] bufferedImageToBytes(BufferedImage image) throws Exception {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", stream);
+        stream.flush();
+        byte[] res = stream.toByteArray();
+        stream.close();
+        return res;
+    }
+
+    @NotNull
+    public static ExternalResource getImgFromUrl(String url) throws Exception {
+        URL u = new URL(url);
+        URLConnection connection = u.openConnection();
+        connection.setDoOutput(true);
+        connection.setConnectTimeout(30 * 1000);
+        connection.setReadTimeout(30 * 1000);
+        return ExternalResource.create(connection.getInputStream());
     }
 
     @NotNull
